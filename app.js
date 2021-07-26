@@ -14,7 +14,9 @@ async function fetchRes(category) {
 }
 
 function displayImage(picArr, index = 0) {
-  document.querySelector("img").src = picArr[index].previewURL;
+  if (picArr.length > 0) {
+    document.querySelector("img").src = picArr[index].previewURL;
+  }
 }
 
 function changeBtColor(btArr) {
@@ -49,7 +51,7 @@ const leftBt = document.querySelector("#left_bt");
 const rightBT = document.querySelector("#right_bt");
 const catgoryBtArr = [sportBt, foodBt, musicBt];
 const depictSpan = document.querySelector("#depict_span");
-
+const searchInput = document.querySelector("#search_input");
 let picArr = [];
 let index = 0;
 
@@ -64,8 +66,10 @@ musicBt.addEventListener("click", function () {
   depictSpan.innerHTML = `Showing ${category} collection`;
 
   fetchRes(category).then((res) => {
-    picArr = res.data.hits;
-    displayImage(picArr);
+    if (res.data.hits.length > 0) {
+      picArr = res.data.hits;
+      displayImage(picArr);
+    }
   });
 });
 
@@ -114,15 +118,14 @@ rightBT.addEventListener("click", function () {
 
 searchBt.addEventListener("click", function (e) {
   e.preventDefault();
-  const searchInput = document.querySelector("#search_input");
   let input = searchInput.value;
   if (input === "") {
     return;
   }
   unclickedAll(catgoryBtArr);
   changeBtColor(catgoryBtArr);
-
-  fetchRes(input).then((res) => {
+  category = input;
+  fetchRes(category).then((res) => {
     picArr = res.data.hits;
     displayImage(picArr);
     depictSpan.innerHTML = `Showing ${input} collection`;
@@ -135,3 +138,16 @@ setInterval(function () {
   index = Math.floor(Math.random() * picArr.length);
   displayImage(picArr, index);
 }, 3000);
+
+searchInput.addEventListener("keyup", function (event) {
+  if (event.keyCode !== 13 || this.value === "" || this.value === category) {
+    return;
+  }
+
+  event.preventDefault();
+  searchBt.click();
+});
+
+document.querySelector("form").addEventListener("submit", function (e) {
+  e.preventDefault();
+});

@@ -74,3 +74,11 @@ button:hover{
     font-weight: bold;
 
 }
+#search_button{
+    border: #fff 1px solid;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#search_input{
+    border-radius: 50px;
+}
